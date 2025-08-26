@@ -102,6 +102,7 @@
 using Content.Goobstation.Common.MartialArts;
 using Content.Shared._EinsteinEngines.Contests;
 using Content.Shared._White.Grab; // Goobstation
+using Content.Shared._White.Standing; // Goobstation
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Alert;
@@ -1007,6 +1008,10 @@ public sealed class PullingSystem : EntitySystem
 
         // prevent you from grabbing someone else while being grabbed
         if (TryComp<PullableComponent>(puller, out var pullerAsPullable) && pullerAsPullable.Puller != null)
+            return false;
+
+        // Prevent you from grabbing someone while crawling under tables
+        if (TryComp<LayingDownComponent>(puller, out var lyingDown) && lyingDown.IsCrawlingUnder)
             return false;
 
         // Don't grab without grab intent
